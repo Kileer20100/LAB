@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import { invoke } from '@tauri-apps/api/core'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -74,8 +75,14 @@ const username = ref('')
 const password = ref('')
 const error = ref('')
 
-const login = () => {
-  if (username.value === 'admin' && password.value === '1234') {
+const login = async () => {
+
+  let answer = await invoke<boolean>("user_list",{
+    user: username.value,
+    password: password.value
+  });
+
+  if (answer == true) {
     error.value = ''
     router.push('/dashboard')
   } else {
